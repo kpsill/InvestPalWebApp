@@ -5,6 +5,8 @@ export function MarkdownText({ content, className }) {
     // we would use a library like react-markdown. 
     // For now, we handle newlines and basic styling.
 
+    if (content == null) return null;
+
     return (
         <div className={cn("prose prose-sm max-w-none text-sm leading-relaxed whitespace-pre-wrap", className)}>
             {content}

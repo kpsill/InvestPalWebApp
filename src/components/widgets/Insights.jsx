@@ -2,14 +2,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
 import { Lightbulb, Info } from "lucide-react";
 
 export function Insights({ data }) {
-    const { headline, insights, context } = data;
+    const { headline, insights, context } = data ?? {};
 
     return (
         <Card className="w-full bg-indigo-50/50 border-indigo-100 shadow-sm overflow-hidden">
             <CardHeader className="pb-2 border-b border-indigo-100/30">
                 <CardTitle className="text-indigo-900 flex items-center gap-2 text-base">
                     <Lightbulb className="w-5 h-5 text-indigo-600" />
-                    {headline}
+                    {headline ?? 'Insights'}
                 </CardTitle>
             </CardHeader>
             <CardContent className="pt-4">

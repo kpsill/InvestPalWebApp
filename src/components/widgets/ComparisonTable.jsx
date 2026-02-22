@@ -1,13 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
 
 export function ComparisonTable({ data }) {
-    const { entities = [], rows = [], comparison_type } = data;
+    const { entities = [], rows = [], comparison_type, title: dataTitle } = data ?? {};
 
     return (
         <Card className="w-full overflow-hidden">
             <CardHeader className="bg-gray-50/50 pb-4 border-b border-gray-100">
                 <CardTitle className="capitalize text-base">
-                    {comparison_type ? `${comparison_type.replace('_', ' ')} Comparison` : 'Comparison'}
+                    {dataTitle ?? (comparison_type ? `${comparison_type.replace('_', ' ')} Comparison` : 'Comparison')}
                 </CardTitle>
             </CardHeader>
             <CardContent className="p-0 overflow-x-auto">
@@ -24,17 +24,19 @@ export function ComparisonTable({ data }) {
                         {rows.map((row, idx) => {
                             const formatValue = (val, format) => {
                                 if (val === null || val === undefined) return '-';
+                                if (typeof val === 'string') return val;
                                 if (format === 'currency') return `$${val.toLocaleString()}`;
                                 if (format === 'percentage') return `${val}%`;
                                 return typeof val === 'number' ? val.toLocaleString() : val;
                             };
+                            const values = row.values ?? {};
 
                             return (
                                 <tr key={idx} className="hover:bg-gray-50/50 transition-colors">
                                     <td className="px-6 py-3 font-medium text-gray-900 border-r border-gray-50 bg-white sticky left-0">{row.metric}</td>
                                     {entities.map((entity, i) => (
                                         <td key={i} className="px-6 py-3 text-gray-600">
-                                            {formatValue(row.values[entity], row.format)}
+                                            {formatValue(values[entity], row.format)}
                                         </td>
                                     ))}
                                 </tr>

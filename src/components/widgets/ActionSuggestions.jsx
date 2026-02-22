@@ -2,7 +2,7 @@ import { Button } from "../ui/Button";
 import { MessageSquare, TrendingUp, BarChart3, Newspaper, ArrowRight } from "lucide-react";
 
 export function ActionSuggestions({ data, onAction }) {
-    const { suggestions } = data;
+    const { suggestions, title: dataTitle } = data ?? {};
 
     // Map icon strings to components if needed, or use a generic one
     const getIcon = (iconName) => {

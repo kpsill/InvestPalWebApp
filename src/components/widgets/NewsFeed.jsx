@@ -1,16 +1,17 @@
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
 import { ExternalLink, Calendar, Newspaper } from "lucide-react";
 import { format } from 'date-fns';
+import { cn } from "../../lib/utils";
 
 export function NewsFeed({ data }) {
-    const { articles } = data;
+    const { articles, title: dataTitle } = data ?? {};
 
     return (
         <Card className="w-full">
             <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-gray-100">
                 <CardTitle className="text-lg font-bold flex items-center gap-2">
                     <Newspaper className="w-5 h-5 text-purple-600" />
-                    Market News
+                    {dataTitle ?? 'Market News'}
                 </CardTitle>
             </CardHeader>
             <CardContent className="pt-4 px-0">

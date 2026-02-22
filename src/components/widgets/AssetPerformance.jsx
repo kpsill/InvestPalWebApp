@@ -3,7 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, Refere
 import { TrendingUp, TrendingDown, Clock } from "lucide-react";
 
 export function AssetPerformance({ data }) {
-    const { symbol, name, current_price, performance_data, last_updated } = data;
+    const { symbol, name, current_price, performance_data, last_updated } = data ?? {};
 
     // Sort by period logical order if possible, or trust API order.
     // Standard order: 1D, 1W, 1M, YTD, 1Y, 5Y

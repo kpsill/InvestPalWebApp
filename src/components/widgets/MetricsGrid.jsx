@@ -2,10 +2,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
 import { safeFormatDate } from "../../lib/utils";
 
 export function MetricsGrid({ data }) {
-    const { metrics, columns = 3 } = data;
+    const { metrics, columns = 3 } = data ?? {};
 
     const formatValue = (value, format) => {
         if (value === null || value === undefined) return '-';
+        if (typeof value === 'string') return value;
         switch (format) {
             case 'currency':
                 return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);

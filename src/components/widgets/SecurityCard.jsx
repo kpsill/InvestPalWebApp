@@ -3,7 +3,7 @@ import { Badge } from "../ui/Badge";
 import { TrendingUp, TrendingDown, Briefcase } from "lucide-react";
 
 export function SecurityCard({ data }) {
-    const { symbol, name, price, market_cap, asset_type, sector, change_percent, description, industry } = data;
+    const { symbol, name, price, market_cap, asset_type, sector, change_percent, description, industry } = data ?? {};
 
     const isPositive = (change_percent || 0) >= 0;
 
