@@ -68,8 +68,8 @@ export function MessageBubble({ message, isUser, onAction }) {
     return (
         <div className={cn("flex w-full gap-4 max-w-3xl mx-auto mb-6", isUser ? "justify-end" : "justify-start")}>
             {!isUser && (
-                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
-                    <Bot className="w-5 h-5 text-blue-600" />
+                <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center flex-shrink-0 mt-1 transition-colors duration-200">
+                    <Bot className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 </div>
             )}
 
@@ -87,7 +87,7 @@ export function MessageBubble({ message, isUser, onAction }) {
                                 : isUser
                                     ? ""
                                     : component.type === 'text'
-                                        ? "bg-white border border-gray-100 p-4 rounded-2xl rounded-tl-sm shadow-sm"
+                                        ? "bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 p-4 rounded-2xl rounded-tl-sm shadow-sm transition-colors duration-200"
                                         : "shadow-sm", // Widgets naturally have their own cards
                             component.type === 'action_suggestions' ? "bg-transparent shadow-none border-none p-0" : ""
                         )}
@@ -95,13 +95,13 @@ export function MessageBubble({ message, isUser, onAction }) {
                         <ComponentRenderer component={component} onAction={onAction} />
                     </div>
                 ))}
-                <span className="text-[10px] text-gray-400 px-1">
+                <span className="text-[10px] text-gray-400 dark:text-gray-500 px-1 transition-colors duration-200">
                     {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </span>
             </div>
 
             {isUser && (
-                <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center flex-shrink-0 mt-1">
+                <div className="w-8 h-8 rounded-full bg-blue-600 dark:bg-blue-500 flex items-center justify-center flex-shrink-0 mt-1 transition-colors duration-200">
                     <User className="w-5 h-5 text-white" />
                 </div>
             )}

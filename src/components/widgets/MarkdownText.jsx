@@ -8,7 +8,7 @@ export function MarkdownText({ content, className }) {
     if (content == null) return null;
 
     return (
-        <div className={cn("prose prose-sm max-w-none text-sm leading-relaxed whitespace-pre-wrap", className)}>
+        <div className={cn("prose prose-sm max-w-none text-sm leading-relaxed whitespace-pre-wrap dark:prose-invert text-gray-800 dark:text-gray-200", className)}>
             {content}
         </div>
     );
