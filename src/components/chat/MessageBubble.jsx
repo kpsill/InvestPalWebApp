@@ -66,15 +66,15 @@ export function MessageBubble({ message, isUser, onAction }) {
     const components = message.components || (message.content ? [{ type: 'text', content: message.content }] : []);
 
     return (
-        <div className={cn("flex w-full gap-4 max-w-3xl mx-auto mb-6", isUser ? "justify-end" : "justify-start")}>
+        <div className={cn("flex w-full gap-2 sm:gap-4 max-w-3xl mx-auto mb-4 sm:mb-6", isUser ? "justify-end" : "justify-start")}>
             {!isUser && (
-                <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center flex-shrink-0 mt-1 transition-colors duration-200">
-                    <Bot className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center flex-shrink-0 mt-1 transition-colors duration-200">
+                    <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 dark:text-blue-400" />
                 </div>
             )}
 
             <div className={cn(
-                "flex flex-col gap-3 min-w-[300px] max-w-[85%]",
+                "flex flex-col gap-2 sm:gap-3 min-w-[0] sm:min-w-[300px] max-w-[90%] sm:max-w-[85%]",
                 isUser ? "items-end" : "items-start"
             )}>
                 {components.map((component, idx) => (
@@ -83,11 +83,11 @@ export function MessageBubble({ message, isUser, onAction }) {
                         className={cn(
                             "w-full",
                             isUser && component.type === 'text'
-                                ? "bg-blue-600 text-white p-3 rounded-2xl rounded-tr-sm shadow-md"
+                                ? "bg-blue-600 text-white p-2.5 sm:p-3 rounded-2xl rounded-tr-sm shadow-md"
                                 : isUser
                                     ? ""
                                     : component.type === 'text'
-                                        ? "bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 p-4 rounded-2xl rounded-tl-sm shadow-sm transition-colors duration-200"
+                                        ? "bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 p-3 sm:p-4 rounded-2xl rounded-tl-sm shadow-sm transition-colors duration-200"
                                         : "shadow-sm", // Widgets naturally have their own cards
                             component.type === 'action_suggestions' ? "bg-transparent shadow-none border-none p-0" : ""
                         )}
@@ -101,8 +101,8 @@ export function MessageBubble({ message, isUser, onAction }) {
             </div>
 
             {isUser && (
-                <div className="w-8 h-8 rounded-full bg-blue-600 dark:bg-blue-500 flex items-center justify-center flex-shrink-0 mt-1 transition-colors duration-200">
-                    <User className="w-5 h-5 text-white" />
+                <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-blue-600 dark:bg-blue-500 flex items-center justify-center flex-shrink-0 mt-1 transition-colors duration-200">
+                    <User className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
             )}
         </div>

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { MessageBubble } from './components/chat/MessageBubble';
 import { InputArea } from './components/chat/InputArea';
 import { Sidebar } from './components/ui/Sidebar';
-import { Loader2, MessageSquare, Moon, Sun } from 'lucide-react';
+import { Loader2, MessageSquare, Moon, Sun, Menu, Plus } from 'lucide-react';
 import { jwtDecode } from "jwt-decode";
 import { SignIn } from './components/auth/SignIn';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
@@ -45,6 +45,7 @@ function App() {
   // Sidebar state
   const [sidebarWidth, setSidebarWidth] = useState(260);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [sessions, setSessions] = useState([]);
 
   // Theme state
@@ -161,6 +162,7 @@ function App() {
       setSessionId(sid);
       setMessages(uiMessages);
       setError(null);
+      setIsMobileSidebarOpen(false); // Close mobile sidebar after selecting a session
     } catch (err) {
       console.error('Failed to load session', err);
       setError('Could not load this chat. Please try again.');
@@ -364,7 +366,36 @@ function App() {
 
   return (
     <div className="h-screen flex flex-row font-sans overflow-hidden bg-slate-50 dark:bg-slate-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
-      {/* Sidebar */}
+      {/* Mobile Backdrop */}
+      {isMobileSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-slate-900/50 dark:bg-slate-900/80 backdrop-blur-sm z-40 min-[768px]:hidden transition-opacity"
+          onClick={() => setIsMobileSidebarOpen(false)}
+        />
+      )}
+
+      {/* Mobile Sidebar Overlay */}
+      {isMobileSidebarOpen && (
+        <Sidebar
+          user={user}
+          onLogout={handleLogout}
+          sessions={sessions.filter(s => !s.is_empty)}
+          activeSessionId={sessionId}
+          onSelectSession={loadSession}
+          onNewChat={() => { handleNewChat(); setIsMobileSidebarOpen(false); }}
+          onDeleteSession={handleDeleteSession}
+          onRenameSession={handleRenameSession}
+          width={280}
+          onWidthChange={() => {}}
+          collapsed={false}
+          onToggleCollapse={() => {}}
+          isMobileOverlay={true}
+          onCloseMobile={() => setIsMobileSidebarOpen(false)}
+          className="fixed top-0 bottom-0 left-0 min-[768px]:hidden"
+        />
+      )}
+
+      {/* Desktop Sidebar */}
       <Sidebar
         user={user}
         onLogout={handleLogout}
@@ -378,32 +409,46 @@ function App() {
         onWidthChange={setSidebarWidth}
         collapsed={sidebarCollapsed}
         onToggleCollapse={() => setSidebarCollapsed(c => !c)}
+        className="hidden min-[768px]:flex"
       />
 
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-gray-200 dark:border-slate-700 sticky top-0 z-50 transition-colors duration-200">
+        <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-gray-200 dark:border-slate-700 sticky top-0 z-10 transition-colors duration-200">
           <div className="px-4 h-16 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="bg-blue-600 p-2 rounded-lg">
+              <button
+                className="min-[768px]:hidden p-2 -ml-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-slate-800 transition-colors"
+                onClick={() => setIsMobileSidebarOpen(true)}
+              >
+                <Menu className="w-5 h-5" />
+              </button>
+              <div className="bg-blue-600 p-2 rounded-lg hidden sm:flex items-center justify-center">
                 <MessageSquare className="w-5 h-5 text-white" />
               </div>
-              <div>
-                <h1 className="font-bold text-gray-900 dark:text-gray-100 tracking-tight">InvestPal</h1>
+              <div className="ml-1 sm:ml-0">
+                <h1 className="font-bold text-gray-900 dark:text-gray-100 tracking-tight text-lg sm:text-base">InvestPal</h1>
                 <div className="flex items-center gap-2">
                   <p className="text-[10px] text-gray-500 font-medium">AI Financial Assistant</p>
                   {user && <span className="text-[10px] text-blue-600 font-medium">| {user.name}</span>}
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <button
                 onClick={toggleTheme}
                 title="Toggle Dark Mode"
                 className="p-1.5 rounded-full text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-slate-800 transition-colors"
               >
                 {isDarkMode ? <Sun className="w-5 h-5 text-yellow-500" /> : <Moon className="w-5 h-5" />}
+              </button>
+              <button
+                onClick={() => { handleNewChat(); setIsMobileSidebarOpen(false); }}
+                title="New Chat"
+                className="min-[768px]:hidden flex items-center justify-center p-1.5 rounded-full text-blue-600 bg-blue-50 hover:bg-blue-100 dark:text-blue-400 dark:bg-blue-900/40 dark:hover:bg-blue-900/60 transition-colors"
+              >
+                <Plus className="w-5 h-5" />
               </button>
               <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-gray-100 dark:bg-slate-800 border border-transparent dark:border-slate-700 rounded-full text-xs text-gray-500 dark:text-gray-400 transition-colors duration-200">
                 <span className={`w-2 h-2 rounded-full ${sessionId ? 'bg-green-500' : 'bg-yellow-500'}`}></span>

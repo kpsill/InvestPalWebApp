@@ -19,9 +19,9 @@ export function InputArea({ value, onChange, onSend, onStop, isLoading, disabled
     };
 
     return (
-        <div className="bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800 p-4 pb-8 transition-colors duration-200">
+        <div className="bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800 p-3 pb-4 sm:p-4 sm:pb-8 transition-colors duration-200">
             <div className="max-w-3xl mx-auto relative">
-                <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-blue-50 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5 border border-blue-100 dark:border-blue-800 shadow-sm opacity-90 backdrop-blur transition-colors duration-200">
+                <div className="absolute -top-10 sm:-top-12 left-1/2 -translate-x-1/2 bg-blue-50 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 text-[10px] sm:text-xs px-2 py-1 sm:px-3 sm:py-1.5 rounded-full flex items-center gap-1.5 border border-blue-100 dark:border-blue-800 shadow-sm opacity-90 backdrop-blur transition-colors duration-200 whitespace-nowrap">
                     <Sparkles className="w-3 h-3" />
                     Ask about stocks, portfolios, or market news
                 </div>

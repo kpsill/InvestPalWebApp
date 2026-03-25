@@ -1,22 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { MessageSquare, Plus, ChevronLeft, ChevronRight, Pencil, Trash2, Check, X, LogOut } from 'lucide-react';
 
-function timeAgo(dateStr) {
-  const date = new Date(dateStr);
-  const now = new Date();
-  const diffMs = now - date;
-  const diffMins = Math.floor(diffMs / 60000);
-  const diffHours = Math.floor(diffMins / 60);
-  const diffDays = Math.floor(diffHours / 24);
-
-  if (diffMins < 2) return 'Just now';
-  if (diffMins < 60) return `${diffMins}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
-  if (diffDays === 1) return 'Yesterday';
-  if (diffDays < 7) return `${diffDays}d ago`;
-  return date.toLocaleDateString();
-}
-
 function SessionItem({ session, isActive, onSelect, onDelete, onRename }) {
   const [renaming, setRenaming] = useState(false);
   const [renameValue, setRenameValue] = useState(session.title);
@@ -83,9 +67,6 @@ function SessionItem({ session, isActive, onSelect, onDelete, onRename }) {
             {session.title}
           </p>
         )}
-        <p className={`text-[10px] mt-0.5 transition-colors duration-200 ${isActive ? 'text-blue-400 dark:text-blue-500' : 'text-gray-400 dark:text-gray-500'}`}>
-          {timeAgo(session.created_at)}
-        </p>
       </div>
 
       {/* Action icons */}
@@ -143,7 +124,11 @@ export function Sidebar({
   onWidthChange,
   collapsed,
   onToggleCollapse,
+  isMobileOverlay = false,
+  onCloseMobile,
+  className = '',
 }) {
+  const [visibleCount, setVisibleCount] = useState(10);
   const isResizing = useRef(false);
   const startX = useRef(0);
   const startWidth = useRef(0);
@@ -178,10 +163,12 @@ export function Sidebar({
     };
   }, [onWidthChange]);
 
-  if (collapsed) {
+  const containerStyle = isMobileOverlay ? { width: '280px', maxWidth: '85vw' } : { width };
+
+  if (collapsed && !isMobileOverlay) {
     return (
       <aside
-        className="flex flex-col items-center py-4 bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 transition-colors duration-200"
+        className={`flex flex-col items-center py-4 bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 transition-colors duration-200 z-50 ${className}`}
         style={{ width: 52, flexShrink: 0 }}
       >
         <button
@@ -213,8 +200,8 @@ export function Sidebar({
 
   return (
     <aside
-      className="relative flex flex-col bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 overflow-hidden transition-colors duration-200 shrink-0"
-      style={{ width }}
+      className={`${isMobileOverlay ? "fixed top-0 bottom-0 left-0 shadow-2xl z-50" : "relative"} flex flex-col bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 overflow-hidden transition-colors duration-200 shrink-0 ${className}`}
+      style={containerStyle}
     >
       {/* Header */}
       <div className="h-16 flex items-center justify-between px-3 border-b border-gray-200 dark:border-slate-700">
@@ -227,13 +214,24 @@ export function Sidebar({
           >
             <Plus className="w-4 h-4" />
           </button>
-          <button
-            onClick={onToggleCollapse}
-            title="Collapse sidebar"
-            className="p-1.5 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
+          
+          {isMobileOverlay ? (
+            <button
+              onClick={onCloseMobile}
+              title="Close sidebar"
+              className="p-1.5 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          ) : (
+            <button
+              onClick={onToggleCollapse}
+              title="Collapse sidebar"
+              className="p-1.5 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+          )}
         </div>
       </div>
 
@@ -245,16 +243,32 @@ export function Sidebar({
             No previous chats
           </div>
         ) : (
-          sessions.map((session) => (
-            <SessionItem
-              key={session.session_id}
-              session={session}
-              isActive={activeSessionId === session.session_id}
-              onSelect={onSelectSession}
-              onDelete={onDeleteSession}
-              onRename={onRenameSession}
-            />
-          ))
+          <>
+            {sessions.slice(0, visibleCount).map((session, i, arr) => (
+              <div key={session.session_id}>
+                <SessionItem
+                  session={session}
+                  isActive={activeSessionId === session.session_id}
+                  onSelect={onSelectSession}
+                  onDelete={onDeleteSession}
+                  onRename={onRenameSession}
+                />
+                {i < arr.length - 1 && (
+                  <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-slate-800 to-transparent mx-4 opacity-70" />
+                )}
+              </div>
+            ))}
+            {sessions.length > visibleCount && (
+              <div className="px-3 py-2 mt-1">
+                <button
+                  onClick={() => setVisibleCount((c) => c + 10)}
+                  className="w-full py-1.5 rounded-lg text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+                >
+                  Load More ({sessions.length - visibleCount})
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
 
@@ -285,11 +299,13 @@ export function Sidebar({
       )}
 
       {/* Resize Handle */}
-      <div
-        onMouseDown={handleMouseDown}
-        className="absolute top-0 right-0 h-full w-1 cursor-col-resize hover:bg-blue-400 transition-colors bg-transparent"
-        title="Drag to resize"
-      />
+      {!isMobileOverlay && (
+        <div
+          onMouseDown={handleMouseDown}
+          className="absolute top-0 right-0 h-full w-1 cursor-col-resize hover:bg-blue-400 transition-colors bg-transparent"
+          title="Drag to resize"
+        />
+      )}
     </aside>
   );
 }
