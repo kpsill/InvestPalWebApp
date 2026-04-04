@@ -17,10 +17,10 @@ import { InvestmentCalculator } from "../widgets/InvestmentCalculator";
 
 import { Insights } from "../widgets/Insights";
 
-const ComponentRenderer = ({ component, onAction }) => {
+const ComponentRenderer = ({ component, onAction, isUserText }) => {
     switch (component.type) {
         case 'text':
-            return <MarkdownText content={component.content} />;
+            return <MarkdownText content={component.content} className={isUserText ? "!text-white" : undefined} />;
         case 'security_card':
             return <SecurityCard data={component} />;
         case 'metrics_grid':
@@ -92,7 +92,7 @@ export function MessageBubble({ message, isUser, onAction }) {
                             component.type === 'action_suggestions' ? "bg-transparent shadow-none border-none p-0" : ""
                         )}
                     >
-                        <ComponentRenderer component={component} onAction={onAction} />
+                        <ComponentRenderer component={component} onAction={onAction} isUserText={isUser && component.type === 'text'} />
                     </div>
                 ))}
                 <span className="text-[10px] text-gray-400 dark:text-gray-500 px-1 transition-colors duration-200">
